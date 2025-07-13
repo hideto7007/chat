@@ -18,12 +18,17 @@ func NewUpdateUserUseCase(userRepository repositories.UsersRepositoryInterface) 
 }
 
 func (uc *UpdateUserUseCase) Execute(ctx context.Context, userDto *UpdateUserDto) (*entities.User, error) {
+	user, _ := uc.userRepository.FindById(ctx, userDto.ID)
+	if user == nil {
+		return nil, fmt.Errorf("user not found with id: %d", userDto.ID)
+	}
 	newUser := &entities.User{
 		ID:       &userDto.ID,
 		Name:     userDto.Name,
 		Email:    userDto.Email,
 		Password: userDto.Password,
 	}
+	newUser.Update()
 
 	user, err := uc.userRepository.Update(ctx, newUser)
 

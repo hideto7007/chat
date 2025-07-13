@@ -1,7 +1,8 @@
 package entities
 
 import (
-	"chat/lib/auth"
+	lib "chat/lib/auth"
+	"time"
 )
 
 type User struct {
@@ -9,6 +10,7 @@ type User struct {
     Name      string
     Email     string
     Password  string
+    UpdatedAt time.Time
 }
 
 func (User) TableName() string {
@@ -27,9 +29,8 @@ func NewUser(name, email, plainPassword string) (*User, error) {
     }, nil
 }
 
-func (u *User) Update(name, email string) {
-    u.Name = name
-    u.Email = email
+func (u *User) Update() {
+    u.UpdatedAt = time.Now()
 }
 
 

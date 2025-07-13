@@ -16,7 +16,7 @@ func NewDeleteUserUseCase(userRepository repositories.UsersRepositoryInterface) 
 	}
 }
 
-func (uc *DeleteUserUseCase) Execute(ctx context.Context, id string) error {
+func (uc *DeleteUserUseCase) Execute(ctx context.Context, id uint) error {
 	if err := uc.userRepository.Delete(ctx, id); err != nil {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}

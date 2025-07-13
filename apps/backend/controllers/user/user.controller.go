@@ -3,6 +3,7 @@ package user
 import (
 	"chat/application/usecase/users"
 	"chat/domain/entities"
+	"chat/lib/cast"
 	"chat/lib/gin/response"
 	"fmt"
 	"net/http"
@@ -72,7 +73,11 @@ func (c *UserController) List(ctx *gin.Context) {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /api/users/id/{id} [get]
 func (c *UserController) GetIdUser(ctx *gin.Context) {
-    userID := ctx.Param("id")
+    userID, err := cast.Unit(ctx.Param("id"))
+    if err != nil {
+        ctx.JSON(http.StatusBadRequest, response.Error(err))
+        return
+    }
     user, err := c.getIDUseCase.Execute(ctx, userID)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, response.Error(err))
@@ -197,8 +202,13 @@ func (c *UserController) Update(ctx *gin.Context) {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /api/users/{id} [delete]
 func (c *UserController) Delete(ctx *gin.Context) {
-	userID := ctx.Param("id")
-	err := c.deleteUserUseCase.Execute(ctx, userID)
+	userID, err := cast.Unit(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Error(err))
+		return
+	}
+
+	err = c.deleteUserUseCase.Execute(ctx, userID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.Error(err))
 		return

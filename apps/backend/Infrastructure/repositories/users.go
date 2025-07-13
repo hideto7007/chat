@@ -25,7 +25,7 @@ func (r *UserRepository) FindAll(ctx context.Context) ([]entities.User, error) {
 	return users, nil
 }
 
-func (r *UserRepository) FindById(ctx context.Context, id string) (*entities.User, error) {
+func (r *UserRepository) FindById(ctx context.Context, id uint) (*entities.User, error) {
 	var user entities.User
 	if err := r.db.WithContext(ctx).First(&user, id).Error; err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (r *UserRepository) Update(ctx context.Context, user *entities.User) (*enti
 	return user, nil
 }
 
-func (r *UserRepository) Delete(ctx context.Context, id string) error {
+func (r *UserRepository) Delete(ctx context.Context, id uint) error {
 	var user entities.User
 	if err := r.db.WithContext(ctx).First(&user, id).Error; err != nil {
 		return err

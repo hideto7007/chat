@@ -16,13 +16,13 @@ func NewGetIdUserUseCase(userRepository repositories.UsersRepositoryInterface) *
 		userRepository: userRepository,
 	}
 }
-func (uc *GetIdUserUseCase) Execute(ctx context.Context, id string) (*GetIdUserDto, error) {
+func (uc *GetIdUserUseCase) Execute(ctx context.Context, id uint) (*GetIdUserDto, error) {
 	user, err := uc.userRepository.FindById(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find user by id: %w", err)
 	}
 	if user == nil {
-		return nil, fmt.Errorf("user not found with id: %s", id)
+		return nil, fmt.Errorf("user not found with id: %d", id)
 	}
 
 	return NewGetIdUserDto(user), nil
