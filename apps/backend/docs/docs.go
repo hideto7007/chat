@@ -131,19 +131,26 @@ const docTemplate = `{
         },
         "/api/users/email/{email}": {
             "get": {
-                "description": "ユーザーEmailを指定してユーザー情報を取得します",
+                "description": "ユーザーEmailとパスワードを指定してユーザー情報を取得します",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "users"
                 ],
-                "summary": "ユーザーEmailで取得",
+                "summary": "ユーザーログイン取得",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "User Email",
                         "name": "email",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Password",
+                        "name": "password",
                         "in": "path",
                         "required": true
                     }

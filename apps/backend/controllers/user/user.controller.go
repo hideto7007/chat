@@ -2,7 +2,6 @@ package user
 
 import (
 	"chat/application/usecase/users"
-	"chat/domain/entities"
 	"chat/lib/cast"
 	"chat/lib/gin/response"
 	"fmt"
@@ -18,6 +17,7 @@ type UserController struct {
 	updateUserUseCase *users.UpdateUserUseCase
 	getEmailUseCase   *users.GetEmailUserUseCase
 	getIDUseCase      *users.GetIdUserUseCase
+	loginUserUseCase  *users.LoginUserUseCase
 }
 
 func NewUserController(
@@ -27,6 +27,7 @@ func NewUserController(
 	updateUserUseCase *users.UpdateUserUseCase,
 	getEmailUseCase *users.GetEmailUserUseCase,
 	getIDUseCase *users.GetIdUserUseCase,
+	loginUserUseCase *users.LoginUserUseCase,
 ) *UserController {
     return &UserController{
         listUserUseCase:   listUserUseCase,
@@ -35,6 +36,7 @@ func NewUserController(
 		updateUserUseCase: updateUserUseCase,
 		getEmailUseCase:   getEmailUseCase,
 		getIDUseCase:      getIDUseCase,
+        loginUserUseCase:  loginUserUseCase,
     }
 }
 
@@ -114,6 +116,33 @@ func (c *UserController) GetEmailUser(ctx *gin.Context) {
     })
 }
 
+// @Summary ユーザーログイン取得
+// @Description ユーザーEmailとパスワードを指定してユーザー情報を取得します
+// @Tags users
+// @Param email path string true "User Email"
+// @Param password path string true "User Password"
+// @Produce json
+// @Success 200 {object} UserResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /api/users/email/{email} [get]
+func (c *UserController) Login(ctx *gin.Context) {
+    userEmail := ctx.Param("email")
+    userPassword := ctx.Param("password")
+    user, err := c.loginUserUseCase.Execute(ctx, userEmail, userPassword)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, response.Error(err))
+        return
+    }
+
+    ctx.JSON(http.StatusOK, UserResponse{
+        ID:    user.ID,
+        Name:  user.Name,
+        Email: user.Email,
+    })
+}
+
+
+
 // @Summary ユーザー作成
 // @Description 新しいユーザーを作成します
 // @Tags users
@@ -132,11 +161,9 @@ func (c *UserController) Create(ctx *gin.Context) {
     }
 
 	newUser := users.NewCreateUserDto(
-		&entities.User{
-			Name:     req.Name,
-			Email:    req.Email,
-			Password: req.Password,
-		},
+		req.Name,
+		req.Email,
+		req.Password,
 	)
 
     user, err := c.createUserUseCase.Execute(ctx, newUser)
@@ -171,12 +198,10 @@ func (c *UserController) Update(ctx *gin.Context) {
     }
 
 	newUser := users.NewUpdateUserDto(
-		&entities.User{
-			ID:       &req.ID,
-			Name:     req.Name,
-			Email:    req.Email,
-			Password: req.Password,
-		},
+		req.ID,
+		req.Name,
+		req.Email,
+		req.Password,
 	)
 
     userDto, err := c.updateUserUseCase.Execute(ctx, newUser)

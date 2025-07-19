@@ -3,6 +3,8 @@ package users
 import (
 	"chat/domain/entities"
 	"chat/domain/repositories"
+	passwordCheck "chat/domain/valueObject/PasswordCheck"
+	passwordHash "chat/domain/valueObject/passwordHash"
 	"context"
 	"fmt"
 )
@@ -18,13 +20,20 @@ func NewCreateUserUseCase(userRepository repositories.UsersRepositoryInterface) 
 }
 
 func (uc *CreateUserUseCase) Execute(ctx context.Context, userDto *CreateUserDto) (*entities.User, error) {
-	newUser, err := entities.NewUser(
-		userDto.Name,
-		userDto.Email,
-		userDto.Password,
-	)
+    passObj := passwordCheck.NewPasswordCheck(userDto.Password)
+    if err := passObj.Validate(); err != nil {
+        return nil, fmt.Errorf("invalid password: %w", err)
+    }
+
+	passwordHash, err := passwordHash.NewPasswordHash(userDto.Password)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create new user entity: %w", err)
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	newUser := &entities.User{
+		Name:  userDto.Name,
+		Email: userDto.Email,
+		Password: passwordHash,
 	}
 
 	user, err := uc.userRepository.Create(ctx, newUser)
@@ -37,17 +46,15 @@ func (uc *CreateUserUseCase) Execute(ctx context.Context, userDto *CreateUserDto
 }
 
 type CreateUserDto struct {
-	ID       *uint   `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func NewCreateUserDto(u *entities.User) *CreateUserDto {
-	return &CreateUserDto{
-		ID:       u.ID,
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
-	}
+func NewCreateUserDto(name, email, password string) *CreateUserDto {
+    return &CreateUserDto{
+        Name:     name,
+        Email:    email,
+        Password: password,
+    }
 }

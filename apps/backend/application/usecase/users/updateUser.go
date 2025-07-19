@@ -3,6 +3,7 @@ package users
 import (
 	"chat/domain/entities"
 	"chat/domain/repositories"
+	"chat/domain/valueObject/passwordHash"
 	"context"
 	"fmt"
 )
@@ -22,15 +23,19 @@ func (uc *UpdateUserUseCase) Execute(ctx context.Context, userDto *UpdateUserDto
 	if user == nil {
 		return nil, fmt.Errorf("user not found with id: %d", userDto.ID)
 	}
+	passwordHash, err := passwordHash.NewPasswordHash(userDto.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
 	newUser := &entities.User{
 		ID:       &userDto.ID,
 		Name:     userDto.Name,
 		Email:    userDto.Email,
-		Password: userDto.Password,
+		Password: passwordHash,
 	}
 	newUser.Update()
 
-	user, err := uc.userRepository.Update(ctx, newUser)
+	user, err = uc.userRepository.Update(ctx, newUser)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to Update user: %w", err)
@@ -46,11 +51,11 @@ type UpdateUserDto struct {
 	Password string `json:"password"`
 }
 
-func NewUpdateUserDto(u *entities.User) *UpdateUserDto {
+func NewUpdateUserDto(id uint, name, email, password string) *UpdateUserDto {
 	return &UpdateUserDto{
-		ID:    *u.ID,
-		Name:  u.Name,
-		Email: u.Email,
-		Password: u.Password,
+		ID:       id,
+		Name:     name,
+		Email:    email,
+		Password: password,
 	}
 }

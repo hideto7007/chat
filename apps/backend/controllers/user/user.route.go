@@ -15,11 +15,13 @@ func RegisterUserRoutes(r *gin.RouterGroup, repo repositories.UsersRepositoryInt
         usecase.NewUpdateUserUseCase(repo),
         usecase.NewGetEmailUserUseCase(repo),
         usecase.NewGetIdUserUseCase(repo),
+        usecase.NewLoginUserUseCase(repo),
     )
 
     r.GET("/users", userController.List)
     r.GET("/users/id/:id", userController.GetIdUser)
     r.GET("/users/email/:email", userController.GetEmailUser)
+    r.POST("/users/login", userController.Login)
     r.POST("/users", userController.Create)
     r.PUT("/users", userController.Update)
     r.DELETE("/users/:id", userController.Delete)

@@ -158,11 +158,16 @@ paths:
       - users
   /api/users/email/{email}:
     get:
-      description: ユーザーEmailを指定してユーザー情報を取得します
+      description: ユーザーEmailとパスワードを指定してユーザー情報を取得します
       parameters:
       - description: User Email
         in: path
         name: email
+        required: true
+        type: string
+      - description: User Password
+        in: path
+        name: password
         required: true
         type: string
       produces:
@@ -176,7 +181,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: ユーザーEmailで取得
+      summary: ユーザーログイン取得
       tags:
       - users
   /api/users/id/{id}:
