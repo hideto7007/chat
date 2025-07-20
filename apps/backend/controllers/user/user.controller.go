@@ -119,16 +119,20 @@ func (c *UserController) GetEmailUser(ctx *gin.Context) {
 // @Summary ユーザーログイン取得
 // @Description ユーザーEmailとパスワードを指定してユーザー情報を取得します
 // @Tags users
-// @Param email path string true "User Email"
-// @Param password path string true "User Password"
+// @Accept json
 // @Produce json
+// @Param user body LoginRequest true "ユーザーログインリクエスト"
 // @Success 200 {object} UserResponse
+// @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
-// @Router /api/users/email/{email} [get]
+// @Router /api/users/login [post]
 func (c *UserController) Login(ctx *gin.Context) {
-    userEmail := ctx.Param("email")
-    userPassword := ctx.Param("password")
-    user, err := c.loginUserUseCase.Execute(ctx, userEmail, userPassword)
+    var req LoginRequest
+    if err := ctx.ShouldBindJSON(&req); err != nil {
+        ctx.JSON(http.StatusBadRequest, response.Error(err))
+        return
+    }
+    user, err := c.loginUserUseCase.Execute(ctx, req.Email, req.Password)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, response.Error(err))
         return

@@ -2,7 +2,6 @@ package entities
 
 import (
 	"chat/domain/valueObject/passwordHash"
-	lib "chat/lib/auth"
 	"time"
 )
 
@@ -28,8 +27,4 @@ func NewUser(name, email string, password *passwordHash.PasswordHash) User {
 
 func (u *User) Update() {
     u.UpdatedAt = time.Now()
-}
-
-func (p *User) Verify(plainPassword string) bool {
-	return lib.Verify(p.Password.ToString(), plainPassword)
 }

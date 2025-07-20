@@ -21,6 +21,13 @@ definitions:
     - name
     - password
     type: object
+  user.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   user.UpdateUserRequest:
     properties:
       email:
@@ -158,16 +165,11 @@ paths:
       - users
   /api/users/email/{email}:
     get:
-      description: ユーザーEmailとパスワードを指定してユーザー情報を取得します
+      description: ユーザーEmailを指定してユーザー情報を取得します
       parameters:
       - description: User Email
         in: path
         name: email
-        required: true
-        type: string
-      - description: User Password
-        in: path
-        name: password
         required: true
         type: string
       produces:
@@ -181,7 +183,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: ユーザーログイン取得
+      summary: ユーザーEmailで取得
       tags:
       - users
   /api/users/id/{id}:
@@ -205,6 +207,36 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: ユーザーIDで取得
+      tags:
+      - users
+  /api/users/login:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーEmailとパスワードを指定してユーザー情報を取得します
+      parameters:
+      - description: ユーザーログインリクエスト
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: ユーザーログイン取得
       tags:
       - users
 swagger: "2.0"
