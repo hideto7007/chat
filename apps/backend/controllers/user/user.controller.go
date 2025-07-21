@@ -245,7 +245,3 @@ func (c *UserController) Delete(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusNoContent, nil)
 }
-
-// やること
-// パスワードだけで更新できるようにする
-// envのところもう少し綺麗にしたい

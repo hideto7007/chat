@@ -10,13 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserModel struct {
-	ID        *uint
-    Name      string
-    Email     string
-    Password  string
-}
-
 type UserRepository struct {
 	db *gorm.DB
 }

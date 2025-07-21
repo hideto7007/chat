@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"chat/Infrastructure/repositories"
 	"chat/controllers/user"
+	factory "chat/infrastructure/repositories/factory"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -10,6 +10,6 @@ import (
 
 func ApiManagerWithDB(r *gin.Engine, db *gorm.DB) {
     api := r.Group("/api")
-    repos := repositories.NewRepositoryFactory(db)
+    repos := factory.NewRepositoryFactory(db)
     user.RegisterUserRoutes(api, repos.UserRepository)
 }

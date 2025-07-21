@@ -36,10 +36,3 @@ func InitDB() *gorm.DB{
     log.Println("dsn", dsn)
     return db
 }
-
-func AllModels() []interface{} {
-    return []interface{}{
-        &User{},
-        // &OtherModel{}, // 追加していく
-    }
-}

@@ -5,8 +5,7 @@ import (
     ginSwagger "github.com/swaggo/gin-swagger"
     swaggerFiles "github.com/swaggo/files"
 
-    // docsのディレクトリを指定
-	_ "chat/docs" // ←追記
+	_ "chat/docs"
 )
 
 // Register はSwaggerのエンドポイントをルーターに登録します
