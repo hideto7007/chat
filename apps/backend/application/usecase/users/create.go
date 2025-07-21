@@ -2,8 +2,8 @@ package users
 
 import (
 	"chat/domain/entities"
-	"chat/domain/repositories"
 	"chat/domain/password"
+	"chat/domain/repositories"
 	"context"
 	"fmt"
 )
