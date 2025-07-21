@@ -3,8 +3,7 @@ package users
 import (
 	"chat/domain/entities"
 	"chat/domain/repositories"
-	passwordCheck "chat/domain/valueObject/PasswordCheck"
-	passwordHash "chat/domain/valueObject/passwordHash"
+	"chat/domain/password"
 	"context"
 	"fmt"
 )
@@ -20,12 +19,12 @@ func NewCreateUserUseCase(userRepository repositories.UsersRepositoryInterface) 
 }
 
 func (uc *CreateUserUseCase) Execute(ctx context.Context, userDto *CreateUserDto) (*entities.User, error) {
-    passObj := passwordCheck.NewPasswordCheck(userDto.Password)
+    passObj := password.NewPasswordCheck(userDto.Password)
     if err := passObj.Validate(); err != nil {
         return nil, fmt.Errorf("invalid password: %w", err)
     }
 
-	passwordHash, err := passwordHash.NewPasswordHash(userDto.Password)
+	passwordHash, err := password.NewPasswordHash(userDto.Password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}

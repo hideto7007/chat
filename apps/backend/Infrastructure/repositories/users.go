@@ -3,7 +3,7 @@ package repositories
 import (
 	"chat/domain/entities"
 	"chat/domain/repositories"
-	"chat/domain/valueObject/passwordHash"
+	"chat/domain/password"
 	"chat/models"
 	"context"
 
@@ -53,7 +53,7 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*entiti
 	if err := r.db.WithContext(ctx).Where("email = ?", email).First(&userModel).Error; err != nil {
 		return nil, err
 	}
-	hashedPassword := passwordHash.NewPasswordHashFromHash(userModel.Password)
+	hashedPassword := password.NewPasswordHashFromHash(userModel.Password)
 	return &entities.User{
 		ID:       &userModel.ID,
 		Name:     userModel.Name,

@@ -1,4 +1,4 @@
-package passwordCheck
+package password
 
 import (
 	"fmt"

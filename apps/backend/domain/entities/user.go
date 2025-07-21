@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"chat/domain/valueObject/passwordHash"
+	"chat/domain/password"
 	"time"
 )
 
@@ -9,7 +9,7 @@ type User struct {
     ID        *uint
     Name      string
     Email     string
-    Password  *passwordHash.PasswordHash
+    Password  *password.PasswordHash
     UpdatedAt time.Time
 }
 
@@ -17,7 +17,7 @@ func (User) TableName() string {
     return "users"
 }
 
-func NewUser(name, email string, password *passwordHash.PasswordHash) User {
+func NewUser(name, email string, password *password.PasswordHash) User {
     return User{
         Name:     name,
         Email:    email,

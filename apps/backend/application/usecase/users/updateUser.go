@@ -2,8 +2,8 @@ package users
 
 import (
 	"chat/domain/entities"
+	"chat/domain/password"
 	"chat/domain/repositories"
-	"chat/domain/valueObject/passwordHash"
 	"context"
 	"fmt"
 )
@@ -23,7 +23,7 @@ func (uc *UpdateUserUseCase) Execute(ctx context.Context, userDto *UpdateUserDto
 	if user == nil {
 		return nil, fmt.Errorf("user not found with id: %d", userDto.ID)
 	}
-	passwordHash, err := passwordHash.NewPasswordHash(userDto.Password)
+	passwordHash, err := password.NewPasswordHash(userDto.Password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}

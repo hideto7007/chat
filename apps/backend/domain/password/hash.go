@@ -1,4 +1,4 @@
-package passwordHash
+package password
 
 import (
 	lib "chat/lib/auth"
